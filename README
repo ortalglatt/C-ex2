@@ -1,0 +1,59 @@
+c_ex2
+ortal.netzer
+312416845
+######
+
+In this exercise, we built a program that get from the user three inputs -
+1. Graph File Path - Path to a file that describes a graph.
+2. First Vertex - Number of first vertex.
+3. Second Vertex - Number of second vertex.
+The program will read the file, check if the file describes a legal graph. If it is a legal graph,
+the program will check if it's a tree. If so, some information about the graph and the shortest
+route from the first vertex to the second one, will be printed.
+If their was an error in the program, The program will close and an informative massage will be
+printed to the stderr.
+
+
+In my solution:
+* I used two structs - node struct and Graph struct. Each has an allocation function and a free
+function.
+
+First, I checked that the given file is not empty and that the first line of the file is legal, and
+found the vertices amount of the graph.
+Then, in order to read the file only once I checked if the content of the file is legal, and tried
+to build the graph. If the file is invalid, the program will free the graph uit built until now and
+will close the program.
+When building the tree, it will update the number of edges in the graph and the number of parents
+appears in the file for each node.
+After that, it will check if the graph is a tree by checking that -
+1. Their is only one node that has no parent - the root.
+2. All the other nodes, except the root has exactly one parent.
+3. Their is no node that points to itself (parent of itself).
+If it is a tree, it will run BFS when the start node is the root, and then find the minimum height
+by checking the heights of the leaves of the tree, and the maximum height.
+In order to find the diameter, it will run BFS on each of the nodes in the tree, and find the
+maximum distance from all the BFS updates.
+In order to find the shortest route between the two given vertices, it will run the BFS on the
+second given node. Then, it will print the first given node, all the previous nodes until it will
+get to the second node.
+
+
+Running times:
+* Tree check - As I described before, it will run through all the nodes, and for each one it will
+               check the Parents amount, and run through all the children to check if the node is
+               parent of itself. If we will sum all the children of all the nodes, we will get the
+               edges amount of the graph and that why the running time will be O(|V|+|E|).
+* Edges amount - The number of edges is updated every time a children added to one of the nodes.
+                 for that reason, after we built the tree we can get the edges amount by going to
+                 graph->edges_amount, and the running time will be O(1).
+* Finding root - The root will be found, by running through all the nodes and checking their
+                 parents_amount field. The root will be the only node that has no parents. Running
+                 through all the nodes will take O(|V) = O(n).
+* Finding diameter - As I mentioned before, it will run the BFS function on each node (|V| times).
+                     The running time of BFS will be O(|V|+|E|), but when doing that we know already
+                     that the graph is a tree, so - |E| = |V|-1, and we will get the BFS running
+                     time is O(2|V|-1)=O(|V|). As I said, It will run BFS |V| times, so we will get
+                     that finding diameter running time will be O(|V|^2) = O(n^2).
+* Route from u to v - It will run once the BFS on the second node, and then goes from the first node
+                      to the previous node until it will get to the second node. The running time
+                      will be O(|V|+|V|) = O(|V|) = O(n) = O(n^2).
